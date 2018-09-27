@@ -11,12 +11,12 @@
 项目结构
 
 ```yaml
-- sample
-	- data
+sample
+	data
 		data.json 	-- 包含一组数据源
-	- matchers
+	matchers
 		rss.go 		-- 搜索rss源的匹配器
-	- search
+	search
 		default.go 	-- 搜索数据用的默认匹配器
 		feed.go 	-- 用于读取json数据文件
 		match.go 	-- 用于支持不同匹配器的接口
