@@ -39,6 +39,7 @@ func main() {
 }
 
 // pingServer pings the http server to make sure the router is working.
+// API 服务器健康状态自检
 func pingServer() error {
 	for i := 0; i < 2; i++ {
 		// Ping the server by sending a GET request to `/health`.
