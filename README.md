@@ -5,7 +5,7 @@
 
 - Design-Patterns 关于设计模式的Go语言实现
 
-- go-in-action 关于《Go语言实战》的学习代码
+	- go-in-action 关于《Go语言实战》的学习代码
 
 - Beego 框架学习
 
