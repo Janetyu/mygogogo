@@ -1,5 +1,14 @@
-runmode: debug            # 开发模式，debug,release,test
-addr: :6663                # HTTP绑定端口
-name: apiserver            # API Server的名字
-url: http://127.0.0.1:6663 # pingServer函数请求的API服务器的ip:port
-max_ping_count: 10        # pingServer函数尝试的次数
+runmode: debug                    # 开发模式，debug,release,test
+addr: :6663                       # HTTP绑定端口
+name: apiserver                   # API Server的名字
+url: http://127.0.0.1:6663        # pingServer函数请求的API服务器的ip:port
+max_ping_count: 10               # pingServer函数尝试的次数
+log:
+  writers: file,stdout            # 输出位置，有两个可选项 —— file 和 stdout
+  logger_level: DEBUG            # 日志级别，DEBUG、INFO、WARN、ERROR、FATAL
+  logger_file: log/apiserver.log  # 日志输出文件
+  log_format_text: false         # 日志的输出格式，JSON 或者 plaintext，true 会输出成 JSON 格式，false 会输出成非 JSON 格式
+  rollingPolicy: size            # rotate 依据，可选的有 daily 和 size。如果选 daily 则根据天进行转存，如果是 size 则根据大小进行转存
+  log_rotate_date: 1             # rotate 转存时间，配合 rollingPolicy: daily 使用
+  log_rotate_size: 1024          # rotate 转存大小，配合 rollingPolicy: size 使用，这里为1024MB
+  log_backup_count: 7            # 当日志文件达到转存标准时，log 系统会将该日志文件进行压缩备份，这里指定了备份文件的最大个数
