@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"mygithub/Gin/gin-restful-learn/apiserver/handler/sd"
+	"mygithub/Gin/gin-restful-learn/apiserver/handler/user"
 	"mygithub/Gin/gin-restful-learn/apiserver/router/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -23,6 +24,12 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	g.NoRoute(func(c *gin.Context) {
 		c.String(http.StatusNotFound, "The incorrect API route.")
 	})
+
+	// 添加路由
+	u := g.Group("/v1/user")
+	{
+		u.POST("", user.Create)
+	}
 
 	// The health check handlers
 	// sd 分组主要用来检查 API Server 的状态：健康状况、服务器硬盘、CPU 和内存使用量
