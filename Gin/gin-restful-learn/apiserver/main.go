@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"mygithub/Gin/gin-restful-learn/apiserver/config"
+	"mygithub/Gin/gin-restful-learn/apiserver/model"
 	"mygithub/Gin/gin-restful-learn/apiserver/router"
 
 	"github.com/gin-gonic/gin"
@@ -28,6 +29,10 @@ func main() {
 	if err := config.Init(*cfg); err != nil {
 		panic(err)
 	}
+
+	// init db
+	model.DB.Init()
+	defer model.DB.Close()
 
 	// Set gin mode.
 	gin.SetMode(viper.GetString("runmode"))
