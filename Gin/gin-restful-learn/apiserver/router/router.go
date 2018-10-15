@@ -28,7 +28,8 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	// 添加路由
 	u := g.Group("/v1/user")
 	{
-		u.POST("", user.Create)
+		// http://127.0.0.1:8080/v1/user/admin2
+		u.POST("/:username", user.Create)
 	}
 
 	// The health check handlers
