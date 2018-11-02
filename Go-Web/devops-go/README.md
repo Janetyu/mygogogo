@@ -51,3 +51,40 @@ Dev->CI/Build->Deploy->Ops->Feedback->Dev
 - 部署上线
 - 设置监控告警
 - 网站简单的自动恢复
+
+## 网站上云
+
+#### 阿里云简单介绍
+
+- 云服务器 ECS
+- 云监控
+
+#### 简单的 web server 构建
+
+- 利用github仓库
+- 编写代码，并进行本地测试
+- go install 打包代码，在 bin 文件夹中会生成一个可执行文件
+- 因为需要部署到服务器上，因此用交叉编译打包代码
+  - ` env GOOS=linux GOARCH=amd64 go build`
+  - 在当前目录下生成了二进制可执行文件
+- 利用github，把二进制文件上传到服务器上，git add，git status，git commit，git push origin master
+- 在服务器上把仓库克隆下来，并直接启动二进制文件
+  - 可以通过 `netstat -antp` 命令查看进程
+  - 也可以用 `ps aux | grep name` 命令查看 “name” 的进程
+
+#### 持续构建， 部署， 监控告警设置
+
+- 上面操作存在的问题
+  1. git pull
+  2. git push -> git pull
+  3. deploy
+- 对这些人工操作进行自动化改造
+  - 新建一个 sh 脚本，对一些部署所需要的操作进行记录
+  - 在 main.go 中编写函数，通过 `cmd` 工具包对脚本进行调用启动完成自动化部署
+  - 注意指定**不同的端口**进行启动，属于一个管理层面的程序
+  - 设置 github 仓库中的 webhooks ，设置成 push 的事件启动后通知部署服务器执行脚本，注意填的是 **管理层面的服务器的URL地址**："xxx.xxx.xxx.xxx:5000"
+
+#### 设置监控告警
+
+- 使用云服务中的云监控产品服务
+- 配置监控的云服务器以及站点管理
