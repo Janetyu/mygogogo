@@ -307,7 +307,7 @@ mux.Handle("/static/",http.StripPrefix("/static/",files))
 
 ##### 创建处理器函数
 
-处理器函数实际上就是一个接受`ResponseWriter`和`Request`指针作为参数的Go函数
+处理器函数实际上就是一个接受 `ResponseWriter` 和 `Request` 指针作为参数的Go函数
 
 ```go
 func index(w http.ResponseWriter, r *http.Request) {
@@ -321,23 +321,146 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-index函数负责生成HTML并将其写入ResponseWriter中。对Go语言来说，用户只需要把位于相同目录下的所有文件都设置成同一个包，那么这些文件就会与包中的其他文件分享彼此的定义。用户也可以把文件放到其他独立的包里面，然后通过导入（import）这些包来使用它们。
+index 函数负责生成 HTML 并将其写入 ResponseWriter 中。对 Go 语言来说，用户只需要把位于相同目录下的所有文件都设置成同一个包，那么这些文件就会与包中的其他文件分享彼此的定义。用户也可以把文件放到其他独立的包里面，然后通过导入（import）这些包来使用它们。
 
 ##### 使用cookie进行访问控制
 
-当一个用户成功登陆以后，服务器必须在后续的请求中标示出这是一个已登录的用户，为了做到这一点，服务器会在响应的首部中写入一个cookie，而客户端在接收这个cookie之后则会把它存储到浏览器里面。
+当一个用户成功登陆以后，服务器必须在后续的请求中标示出这是一个已登录的用户，为了做到这一点，服务器会在响应的首部中写入一个 cookie ，而客户端在接收这个 cookie 之后则会把它存储到浏览器里面。
 
 ```go
 func authenticate(w http.ResponseWriter,r *http.Request) {
-    
+    r.ParseForm()
+    user,_ := data.UserByEmail(r.PostFormValue("password")) {
+        session := user.CreateSession()
+        cookie := http.Cookie{
+            Name:"_cookie",
+            Value:session.Uuid,
+            HttpOnly:true,
+        }
+        http.SetCookie(w, &cookie)
+        http.Redirect(w, r, "/", 302)
+    } else {
+        http.Redirect(w, r, "/login", 302)
+    }
 }
 ```
 
+data.UserByEmail 函数通过给定的电子邮件地址获取与之对应的 User 结构，而data.Encrypt 函数则用于加密给定的字符串。
 
+在验证用户身份的时候，程序必须先确保用户是真实存在的，并且提交给处理器的密码在加密之后跟存储在数据库里面的已加密用户密码完全一致。
+
+CreateSession 方法创建一个 Session 结构，如下：
+
+```go
+type Session struct {
+    Id int
+    Uuid string
+    Email string
+    UserId int
+    CreatedAt time.Time
+}
+```
+
+Uuid 字段存储的是一个随机生成的唯一 ID ，这个 ID 是实现会话机制的核心，服务器会通过cookie 把这个 ID 存储到浏览器中，并把 Session 结构记录的各项信息存储到数据库中。
+
+在创建了 Session 结构后，又创建了 Cookie 结构
+
+```go
+cookie := http.Cookie{
+    Name:"_cookie",
+    Value:session.Uuid,
+    HttpOnly:true,
+}
+```
+
+cookie 的名字是随意设置的，而 cookie 的值则是将要被存储到浏览器里面的唯一 ID 。因为程序没有给 cookie 设置过期时间，所以这个 cookie 就成了一个会话 cookie ，它将在浏览器关闭时自动被移除。程序将 HttpOnly 字段的值设置成了 true ，这意味这个 cookie 只能通过HTTP或者 HTTPS 访问，但却无法通过 JavaScript 等非 HTTP API 进行访问。
+
+设置完cookie后,将其添加到响应的首部:
+
+```go
+http.SetCookie(writer, &cookie)
+```
+
+然后在处理器函数里面检查当前访问的用户是否已经登录,因此创建一个名为 session 的工具(util)函数,并在各个处理器函数里面复用它。
+
+```go
+func session(w http.ResponeWriter,r *http.Request) (sess data.Session,err error) {
+    cookie, err := r.Cookie("_cookie")
+    if err == nil {
+        session = data.Session(Uuid: cookie.Value)
+        if ok, _ := sess.Check(); !ok {
+            err = errors.New("Invaild session")
+        }
+    }
+    return
+}
+```
+
+从请求中取出 cookie ，session 函数使用了以下代码：
+
+```go
+cookie, err := r.Cookie("_cookie")
+```
+
+如果 cookie 不存在,俺么很明显用户并未登录,相反,如果 cookie 存在,那么 session 函数将继续进行第二项检查--访问数据库并核实会话的唯一 ID 是否存在.
 
 #### 2.4 使用模板生成HTML响应
 
+index 处理器函数里面的大部分代码都是用来为客户端生成 HTML 的.函数把每个用到的模板文件都放到了 Go 的切片里.切片指定的三个 HTML 文件都包含了特定的嵌入命令,这些命令被成为动作 (action) ,动作会在HTML文件里面会被 `{{` 符号和 `}}` 符号包围
+
+程序会调用 ParseFiles 函数对这些模板文件进行语法分析,并创建出相应的模板,程序使用了 Must 函数去包围 ParseFiles 函数的执行结果,这样当 ParseFiles 返回错误的时候, Must 函数就会向用户返回相应的错误报告.
+
+模板文件和模板一一对应的做法可以给开发带来方便.
+
+程序通过调用 ExecuteTemplate 函数,执行 (execute) 已经经过语法分析的 layout 模板.执行模板意味着把模板文件中的内容和来自其他渠道的数据进行合并,然后生成最终的 HTML 内容.
+
+##### 整理代码
+
+```go
+func generateHTML(w http.ResponseWriter, data interface{}, fn ...string){
+    var files []string
+    for _, file := range fn {
+        files = append(files, fmt.Sprintf("templates/%s.html", file))
+    }
+    templates := template.Must(template.ParseFiles(files...))
+    templates.ExecuteTemplate(w, "layout", data)
+}
+```
+
+generateHTML 函数接受一个 ResponseWriter、一些数据及一系列模板文件作为参数.
+
+一个空接口就是一个空集合,这意味这任何类型都可以成为一个空接口,也就是说任何类型的值都可以传递给函数作为参数.
+
+generateHTML 函数的最后一个参数以3个点(...) 开头,表示函数是一个可变参数函数,这意味着这个函数可以在最后的可变参数中接受零个或任意多个值作为参数.在 Go 语言里面,可变参数必须是可变参数函数的最后一个参数.
+
+![模板引擎通过合并数据和模板来生成HTML](模板引擎通过合并数据和模板来生成HTML.jpg)
+
 #### 2.5 安装PostgreSQL
 
+Ubuntu: `sudo apt-get install postgresql postgresql-contrib `
+
+登入Postgres账号: `sudo su postgres`
+
+使用 `createuser` 命令创建一个账号: `createuser --interactive <role name>`
+
+使用 `createdb` 命令创建以你账号名字命名的数据库:
+
+`createdb <YOUR ACCOUNT NAME>`
+
 #### 2.6 连接数据库
+
+![通过结构模型连接数据库和处理器](通过结构模型连接数据库和处理器.jpg)
+
+#### 2.7 Web 应用运作流程回顾
+
+1. 客户端向服务器发送请求
+2. 多路复用器接收到请求,并将其重定向到正确的处理器
+3. 处理器对请求进行处理
+4. 在需要访问数据库的情况下,处理器会使用一个或多个数据结构,这些数据结构都是根据数据库中的数据建模而来的
+5. 当处理器调用与数据结构有关的函数或者方法时,这些数据结背后的模型会与数据库进行连接,并执行相应的操作.
+6. 当请求处理完毕后,处理器会调用模板引擎,有时候还会向模板引擎传递一些通过模板获取到的数据
+7. 模板引擎会对模板文件进行语法分析并创建相应的模板,而这些模板又会与处理器传递的数据一起合并生成最终的HTML
+8. 生成的HTML会作为响应的一部分回传至客户端.
+
+![Web应用工作流程概览](Web应用工作流程概览.jpg)
 
