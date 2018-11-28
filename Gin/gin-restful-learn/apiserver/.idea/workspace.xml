@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a4d706b7-a6d2-4c11-a644-d83ebbac79da" name="Default Changelist" comment="" />
+    <list default="true" id="a4d706b7-a6d2-4c11-a644-d83ebbac79da" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../Go-Web/go-web-native/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Go-Web/go-web-native/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,13 +14,27 @@
     <session id="-1755228672">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.13" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="go" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Go" value="1" />
         </counts>
       </usages-collector>
     </session>
+  </component>
+  <component name="FileEditorManager">
+    <leaf />
   </component>
   <component name="GOROOT" path="C:\Users\JianLinker\software\Go" />
   <component name="Git.Settings">
@@ -41,6 +57,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -48,46 +65,10 @@
               <item name="apiserver" type="b2602c69:ProjectViewProjectNode" />
               <item name="apiserver" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="apiserver" type="b2602c69:ProjectViewProjectNode" />
-              <item name="apiserver" type="462c0819:PsiDirectoryNode" />
-              <item name="conf" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="apiserver" type="b2602c69:ProjectViewProjectNode" />
-              <item name="apiserver" type="462c0819:PsiDirectoryNode" />
-              <item name="config" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="apiserver" type="b2602c69:ProjectViewProjectNode" />
-              <item name="apiserver" type="462c0819:PsiDirectoryNode" />
-              <item name="handler" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="apiserver" type="b2602c69:ProjectViewProjectNode" />
-              <item name="apiserver" type="462c0819:PsiDirectoryNode" />
-              <item name="model" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="apiserver" type="b2602c69:ProjectViewProjectNode" />
-              <item name="apiserver" type="462c0819:PsiDirectoryNode" />
-              <item name="pkg" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="apiserver" type="b2602c69:ProjectViewProjectNode" />
-              <item name="apiserver" type="462c0819:PsiDirectoryNode" />
-              <item name="router" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="apiserver" type="b2602c69:ProjectViewProjectNode" />
-              <item name="apiserver" type="462c0819:PsiDirectoryNode" />
-              <item name="service" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -110,7 +91,7 @@
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22754946" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23135464" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -135,5 +116,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/pkg/auth/auth.go">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
   </component>
 </project>

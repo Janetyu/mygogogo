@@ -5,14 +5,14 @@
 
 - Design-Patterns 关于设计模式的Go语言实现
 
-	- go-in-action 关于《Go语言实战》的学习代码
-
+- go-in-action 关于《Go语言实战》的学习代码
 - Beego 框架学习
 
 - Gin 框架学习
 
-- Go-Web 网络编程学习、框架
-
-- Data structures and algorithms 数据结构与算法的Go语言实现
+- Go-Web 关于网络编程的学习
 
 
+- Go-Bible 《go语言圣经》阅读
+- learn-goroutine go并发学习
+- wx-go go微信公众号开发
